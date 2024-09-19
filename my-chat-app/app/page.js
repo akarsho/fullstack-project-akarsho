@@ -1,95 +1,61 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
+import {useState} from 'react';
+import {useEffect} from 'react';
+import io from 'socket.io-client';
+
+// create the socket connection to the main server
+const socket = io('http://localhost:3000');
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  // useStates for updating the message text and input fields and to get data from them
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState(['']);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    let getChats = async () => {
+      let response = await fetch('/api/messages');
+      setMessages(await response.json());
+    }
+    getChats();
+    // messageEmit is the emission that socket gives out when a message is sent
+    // we should update frontend 
+    socket.on('messageEmit', (text) => {
+      setMessages((prevMessages) => [...prevMessages, {text: text}]);
+    });
+    return () => {
+      // turn off the message emit socket emission
+      socket.off('messageEmit')
+    };
+  });
+  // send message event
+  let sendMessage = (event) => {
+    event.preventDefault();
+    if(input) {
+      // emit a messageEmit
+      console.log("emit!");
+      socket.emit('messageEmit', input);
+      setInput("Type a message!");
+    }
+  };
+
+  // start to return a webpage to test it out
+
+  return (
+    <div className='chat-div'>
+      <div className='chat-box'>
+        {messages.map((msg, index) => (
+          <div key={index}>{msg.text}</div>
+        ))}
+      </div>
+      <form onSubmit={sendMessage}>
+        <input
+          type='text'
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder='Type a message!'
+        />
+        <button type="submit">Send!</button>
+      </form>
     </div>
   );
 }

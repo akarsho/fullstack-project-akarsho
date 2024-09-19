@@ -23,18 +23,24 @@ const Message = mongo.model('Message', chatSchema);
 
 // Get every single message in the MongoDB database to be displayed in our browser
 
+app.use(express.static(path.join(__dirname, 'app')));
+
 app.get('/api/messages', async (req, res) => {
     const messages = await Message.find();
     res.json(messages);
 });
+
+
 
 // Handle connections from users
 io.on('connection', (socket) => {
     console.log("New connection has been made!");
     // Listen for input strings that are submitted through frontend
     socket.on('messageEmit', async (text) => {
+        console.log('message is emitted')
         let message = new Message({contents: text});
         await message.save();
+        print('message arrived')
         io.emit('meesageEmit', text); // send message to our client that a new message has been sent
         // this emission can be used for more operations, such as referesh for eg
     });
