@@ -29,10 +29,23 @@ app.get('/api/messages', async (req, res) => {
 });
 
 // Handle connections from users
-io.on('connection', async (message) => {
-    const message = new Message({contents: message});
-    
+io.on('connection', (socket) => {
+    console.log("New connection has been made!");
+    // Listen for input strings that are submitted through frontend
+    socket.on('messageEmit', async (text) => {
+        let message = new Message({contents: text});
+        await message.save();
+        io.emit('meesageEmit', text); // send message to our client that a new message has been sent
+        // this emission can be used for more operations, such as referesh for eg
+    });
+    // on disconnect, we print something
+    socket.on('disconnect', () => {
+        console.log("A player has disconnected from the server!");
+    });
 });
+
+server.listen(process.env.port, () => console.log("Server listening on PORT " + process.env.port));
+
 
 
 
