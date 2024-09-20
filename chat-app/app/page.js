@@ -5,15 +5,29 @@ import io from 'socket.io-client';
 
 let socket;
 
+const generateUsername = () => {
+  const randomNumber = Math.floor(Math.random() * 1000);
+  return `User${randomNumber}`;
+};
+
+const username = generateUsername();
+
+function scrollToBottom() {
+  const buffer = document.getElementById("messageBox");
+        buffer.scrollTop = buffer.scrollHeight;
+}
+
+setInterval(scrollToBottom, 500);
+
 export default function Home() {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  let [newMessage, setNewMessage] = useState('');
 
   socket = io('http://localhost:3001');
 
+
   useEffect(() => {
     socket = io('http://localhost:3001');
-
     socket.on('loadMessages', (msgs) => {
         setMessages(msgs);
     });
@@ -32,7 +46,8 @@ export default function Home() {
         buffer.scrollTop = buffer.scrollHeight;
     if(newMessage.trim()) {
       console.log("emitting send message with this message", newMessage.toString());
-      socket.emit('sendMessage', newMessage);
+      let currentDate = new Date();
+      socket.emit('sendMessage', username + " at " + currentDate.getHours() +":"+ currentDate.getMinutes() + " said: " + newMessage);
       setNewMessage(''); //Clear any inputs after sending the messages to the socket on the server
     }
   };

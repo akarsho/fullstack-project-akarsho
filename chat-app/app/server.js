@@ -21,14 +21,8 @@ const connectToDatabase = async () => {
     }
 };
 
-const generateUsername = () => {
-    const randomNumber = Math.floor(Math.random() * 1000);
-    return `User${randomNumber}`;
-};
-
 // creating message schema to insert in the db
 const messageSchema = new mongoose.Schema({
-    user: String,
     text: String,
     postedAt: {type: Date, default: Date.now},
 });
@@ -59,8 +53,6 @@ connectToDatabase();
 // then, let's start handling user connections
 io.on('connection', (socket) => {
     console.log("A new user has connected to the server!");
-    const username = generateUsername();
-    console.log("The user was assigned: ", username);
 
     // Send all messages to the client (the NextJs app)
     Message.find().then((messages) => {
@@ -71,12 +63,12 @@ io.on('connection', (socket) => {
         console.log('Received message:', msg);
         try {
             console.log('hello hello hello');
-            const newMessage = new Message({user: username, text: msg});
+            const newMessage = new Message({text: msg});
             await newMessage.save();
             // this will push the Schema into the database
             io.emit('sendMessage', newMessage); //broadcasts to nextJs to be updated over there
         } catch (err) {
-            console.log("Error saving/sending the message to client", err);
+            console.log("Error saving/sending the message to client", error);
         }
     });
 
