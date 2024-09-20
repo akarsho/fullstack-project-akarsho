@@ -12,12 +12,12 @@ const generateUsername = () => {
 
 const username = generateUsername();
 
-function scrollToBottom() {
-  const buffer = document.getElementById("messageBox");
-        buffer.scrollTop = buffer.scrollHeight;
-}
+// function scrollToBottom() {
+//   const buffer = document.getElementById("messageBox");
+//         buffer.scrollTop = buffer.scrollHeight;
+// }
 
-setInterval(scrollToBottom, 500);
+// setInterval(scrollToBottom, 500);
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
