@@ -36,20 +36,22 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Chat Application</h1>
-      <div>
-        {messages.map((msg, index) => (
-          <div key={index}>{msg.text}</div>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={newMessage}
-        onChange={(event) => setNewMessage(event.target.value)}
-        placeholder="Type a message here to send!" 
-      />
-      <button onClick={sendMessage}>Send!</button>
-    </div>
+      <div className="boundingBox">
+        <h1 id="mainHeading">welcome to the chat room.</h1>
+        <div>
+          <div>
+            {messages.map((msg, index) => (
+              <div key={index}>{msg.text}</div>
+            ))}
+          </div>
+          <input id="inputText"
+            type="text"
+            value={newMessage}
+            onChange={(event) => setNewMessage(event.target.value)}
+            placeholder="Type a message here to send!" 
+          />
+          <button id="sendButton" onClick={sendMessage}>Send!</button>
+        </div>
+      </div>  
   );
 }
