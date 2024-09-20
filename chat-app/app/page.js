@@ -12,21 +12,24 @@ export default function Home() {
   socket = io('http://localhost:3001');
 
   useEffect(() => {
-    
+    socket = io('http://localhost:3001');
+
     socket.on('loadMessages', (msgs) => {
-      setMessages(msgs);
+        setMessages(msgs);
     });
     socket.on('sendMessage', (msg) => {
-      setMessages((prevMessages)=>[...prevMessages, msg]);
+        setMessages((prevMessages) => [...prevMessages, msg]);
     });
+
     return () => {
-      socket.disconnect();
+        socket.disconnect();
     };
-  });
+}, []); 
 
   // Handle having a new message
   const sendMessage = () => {
-    if(newMessage) {
+    if(newMessage.trim()) {
+      console.log("emitting send message with this message", newMessage.toString());
       socket.emit('sendMessage', newMessage);
       setNewMessage(''); //Clear any inputs after sending the messages to the socket on the server
     }

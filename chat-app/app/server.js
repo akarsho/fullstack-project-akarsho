@@ -58,16 +58,17 @@ io.on('connection', (socket) => {
     Message.find().then((messages) => {
         socket.emit('loadMessages', messages);
     });
-
     // Listen for new messages from the NexJS client, update the database accordingly
-    socket.on('sendMessage', async(msg) => {
+    socket.on('sendMessage',  async (msg) => {
+        console.log('Received message:', msg);
         try {
+            console.log('hello hello hello');
             const newMessage = new Message({text: msg});
             await newMessage.save();
             // this will push the Schema into the database
             io.emit('sendMessage', newMessage); //broadcasts to nextJs to be updated over there
         } catch (err) {
-            console.log("Error saving/sending the message to client", error);
+            console.log("Error saving/sending the message to client", err);
         }
     });
 
