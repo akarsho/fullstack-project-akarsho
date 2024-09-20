@@ -21,7 +21,10 @@ the frontent of the server.
 1) First of all, my ".env" file is in .gitignore, so you will not be able to access my database as my key has my credentials in it.
 2) You should first navigate yourself to `chat-app/app` and execute the following:
     - `touch .env` or `cd > .env`
-    -  Then, add your mongoDB authentication URL in this format: ```MONGO_URL=mongodb+srv://{username}:{password}@cluster0.xyz.mongodb.net/?retryWrites=true&w=majority&appName=ClusterName```
+    -  Then, add your mongoDB authentication URL in this format:               
+    ```js
+    MONGO_URL=mongodb+srv://{username}:{password}@cluster0.xyz.mongodb.net/?retryWrites=true&w=majority&appName=ClusterName
+    ```
     - Congrats, now you can start with the actual running.
 3) Run `npm install` twice when being in both the chat-app and app directory
 4) Navigate to chat-app/app, and run `node server.js`
