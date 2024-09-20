@@ -14,4 +14,4 @@ the frontent of the server.
 - Persistent message history that loads when users reconnect.
 
 ## Test Picture
-![image](chat-app\app\images\test.png)
+![image](./chat-app/app/images/test.png)
