@@ -28,6 +28,8 @@ export default function Home() {
 
   // Handle having a new message
   const sendMessage = () => {
+    const buffer = document.getElementById("messageBox");
+        buffer.scrollTop = buffer.scrollHeight;
     if(newMessage.trim()) {
       console.log("emitting send message with this message", newMessage.toString());
       socket.emit('sendMessage', newMessage);
@@ -36,13 +38,15 @@ export default function Home() {
   };
 
   return (
-      <div className="boundingBox">
+      <div className="">
         <h1 id="mainHeading">welcome to the chat room.</h1>
-        <div>
-          <div>
-            {messages.map((msg, index) => (
-              <div key={index}>{msg.text}</div>
-            ))}
+        <div className="boundingBox">
+          <div className="messageParent">
+            <div className = "messageBox" id="messageBox">
+              {messages.map((msg, index) => (
+                <div key={index}>{msg.text}</div>
+              ))}
+            </div>
           </div>
           <input id="inputText"
             type="text"
